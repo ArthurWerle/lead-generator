@@ -1,5 +1,5 @@
 import Header from "@/components/header";
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Markdown from "react-markdown";
 
@@ -8,7 +8,7 @@ export default function Page() {
   const [leadCopied, setLeadCopied] = useState(false);
   const [lead, setLead] = useState("");
 
-  async function generateLead(e) {
+  async function generateLead(e: any) {
     e.preventDefault();
     setLoading(true);
     const inputs = document.getElementById("inputs") as HTMLTextAreaElement;
@@ -33,7 +33,10 @@ export default function Page() {
     <main>
       <Header />
       <div className="w-full">
-        <form onSubmit={(e) => generateLead(e)} className="flex flex-col gap-2">
+        <form
+          onSubmit={(e: any) => generateLead(e)}
+          className="flex flex-col gap-2"
+        >
           <label htmlFor="inputs">Provide some inputs to build your lead</label>
           <textarea
             name="inputs"
