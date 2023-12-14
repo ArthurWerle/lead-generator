@@ -12,21 +12,38 @@ export default function Page() {
     e.preventDefault();
     setLoading(true);
     const inputs = document.getElementById("inputs") as HTMLTextAreaElement;
+
     const response = await fetch("/api/askai", {
       method: "POST",
       body: inputs.value,
     });
-    const data = await response.json();
-    setLoading(false);
-    console.log("data", data);
-    if (data.error) {
-      alert("Something went wrong!");
-      return;
-    }
 
-    alert("Lead generated successfully!");
-    inputs.value = "";
-    setLead(data.result);
+    console.log("response and r");
+
+    if (response.ok && response.body) {
+      const reader = response.body.getReader();
+
+      const processStream = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            console.log("stream completed");
+            setLoading(false);
+            break;
+          }
+
+          let chunk = new TextDecoder("utf-8").decode(value);
+
+          setLead((prev) => prev + chunk);
+        }
+      };
+
+      processStream().catch((err) => {
+        console.log("--stream error--", err);
+        alert("Something went wrong. Please try again.");
+      });
+    }
   }
 
   return (

@@ -1,11 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 type Response = {
   error?: any;
@@ -17,7 +16,7 @@ export default async function handler(
   res: NextApiResponse<Response>
 ) {
   if (req.method === "POST") {
-    if (!configuration.apiKey) {
+    if (!openai.apiKey) {
       res.status(500).json({
         error: {
           message:
@@ -29,10 +28,10 @@ export default async function handler(
     }
 
     const inputs = req.body;
-    console.log(generatePrompt(inputs));
 
     try {
-      const completion = await openai.createChatCompletion({
+      const stream = await openai.chat.completions.create({
+        stream: true,
         model: "gpt-4",
         messages: [
           {
@@ -45,10 +44,12 @@ export default async function handler(
         temperature: 0.6,
       });
 
-      res.status(200).json({
-        result: completion.data.choices[0].message?.content,
-        error: false,
-      });
+      for await (const chunk of stream) {
+        const response = chunk.choices[0]?.delta?.content || "";
+        res.write(response);
+      }
+
+      res.end();
     } catch (error: any) {
       if (error.response) {
         console.log(error);
