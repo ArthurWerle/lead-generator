@@ -18,8 +18,6 @@ export default function Page() {
       body: inputs.value,
     });
 
-    console.log("response and r");
-
     if (response.ok && response.body) {
       const reader = response.body.getReader();
 
