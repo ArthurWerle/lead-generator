@@ -80,7 +80,7 @@ export default function Page() {
                   </button>
                 ) : (
                   <button className="bg-blue-500 p-2 rounded text-white">
-                    Copy
+                    Copy all
                   </button>
                 )}
               </CopyToClipboard>

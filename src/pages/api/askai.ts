@@ -37,7 +37,7 @@ export default async function handler(
           {
             role: "system",
             content:
-              "You are a marketing expert and you are trying to make me buy your product.",
+              "You are a marketing expert and you are pitching your produdct to potential clientes through emails. The product consists in a marketing taxonomy platform, that helps you to organize your marketing campaigns. The name of the company is Claravine",
           },
           { role: "user", content: generatePrompt(inputs) },
         ],
@@ -69,7 +69,6 @@ export default async function handler(
 }
 
 function generatePrompt(inputs: string) {
-  return `Your trying to convince a company to buy your product. You are a marketing expert and you are trying to make me buy your product. 
-  The product consists in a marketing taxonomy platform, that helps you to organize your marketing campaigns. The name of the company is Claravine.
-  Some additional information you can use on your pitch: ${inputs}. I also want your answer to be in markdown format.`;
+  return `Based on the CSV I'll add here, I want to create an unique lead for every contact in the text. So for every different contact, is a different email. 
+  I also want your answer to be in markdown format. Here's the CSV information you can use on your pitch: ${inputs}.`;
 }
